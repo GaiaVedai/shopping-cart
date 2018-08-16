@@ -2,9 +2,19 @@ var source = $('#new-item-template').html();
 var template = Handlebars.compile(source)
 
 var ShoppingCart = function () {
-
+  
   // an array with all of our cart items
-  var cart = [];
+  // var cart = [];
+  let STORAGE_ID = 'shopping-cart'
+  let saveToLocalStorage = function () {
+    localStorage.setItem(STORAGE_ID, JSON.stringify(cart));
+  }
+  
+  getFromLocalStorage = function () {
+    return JSON.parse(localStorage.getItem(STORAGE_ID) || '[]');
+  }
+  
+  let cart = getFromLocalStorage();
 
   var updateCart = function (itemName, itemPrice) {
     // TODO: Write this function. In this function we render the page.
@@ -15,7 +25,7 @@ var ShoppingCart = function () {
     var newHTML = template({ cartItems: cart });
     $('.cart-list').append(newHTML);
     cartTotal();
-      }
+  }
   const cartTotal = function () {
     let total = 0;
     for (i = 0; i < cart.length; i++) {
@@ -24,7 +34,7 @@ var ShoppingCart = function () {
     $('.total').text(total)
   }
 
-
+  
   var addItem = function (itemName, itemPrice) {
     // TODO: Write this function. Remember this function has nothing to do with display. 
     // It simply is for adding an item to the cart array, no HTML involved - honest ;-)
@@ -33,23 +43,25 @@ var ShoppingCart = function () {
       price: itemPrice
     }
     cart.push(newItem);
+    saveToLocalStorage()
   }
-
+  
   var clearCart = function () {
     // TODO: Write a function that clears the cart ;-)
     cart.length = 0;
     updateCart();
+    saveToLocalStorage();
   }
-
+  
   return {
     updateCart: updateCart,
     addItem: addItem,
     clearCart: clearCart
+    // saveToLocalStorage: saveToLocalStotorage
   }
 };
 
 var app = ShoppingCart();
-
 // update the cart as soon as the page loads!
 app.updateCart();
 
